@@ -17,8 +17,10 @@ CFMutableDictionaryRef match_device_with_id(int vendor_id, int product_id)
     CFNumberRef product_id_ref = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &product_id);
     if (!product_id_ref) return NULL;
 
+    int usage_key = 6;
     CFDictionarySetValue(dict, CFSTR(kIOHIDVendorIDKey), vendor_id_ref);
     CFDictionarySetValue(dict, CFSTR(kIOHIDProductIDKey), product_id_ref);
+    CFDictionarySetValue(dict, CFSTR(kIOHIDPrimaryUsageKey), CFNumberCreate(NULL, kCFNumberIntType, &usage_key));
 
     CFRelease(vendor_id_ref);
     CFRelease(product_id_ref);
@@ -29,7 +31,7 @@ CFMutableDictionaryRef match_device_with_id(int vendor_id, int product_id)
 int main(int argc, char **argv)
 {
     IOHIDManagerRef hid_manager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
-    CFMutableDictionaryRef internal_keyboard = match_device_with_id(0x05ac, 0x0263);
+    CFMutableDictionaryRef internal_keyboard = match_device_with_id(0x05ac, 0x0342);
     IOHIDManagerSetDeviceMatching(hid_manager, internal_keyboard);
     IOHIDManagerRegisterInputValueCallback(hid_manager, keyboard_callback, NULL);
     IOHIDManagerScheduleWithRunLoop(hid_manager, CFRunLoopGetMain(), kCFRunLoopDefaultMode);
